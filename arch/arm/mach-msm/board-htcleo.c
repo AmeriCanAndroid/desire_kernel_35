@@ -15,6 +15,7 @@
  *
  */
 
+#include <linux/crc32.h>
 #include <linux/delay.h>
 #include <linux/gpio.h>
 #include <linux/i2c.h>
@@ -521,22 +522,98 @@ static struct platform_device msm_camera_sensor_s5k3e2fx =
 	},
 };
 
+//-----PATCH for BT mac address
+int is_valid_mac_address(char *mac)
+{
+	int i =0;
+	while(i<17){
+		if( (i%3) == 2){
+			if ((mac[i] !=':') && (mac[i] = '-')) return 0;
+			if (mac[i] == '-') mac[i] = ':';
+		}else{
+			if ( !( ((mac[i] >= '0') && (mac[i] <= '9')) ||
+				((mac[i] >= 'a') && (mac[i] <= 'f')) ||
+				((mac[i] >= 'A') && (mac[i] <= 'F')))
+			) return 0;	
+		}
+		i++;
+	}
+	if (mac[i] != '\0') return 0;
+	return 1;
+}
+//-----------------------------
+
 ///////////////////////////////////////////////////////////////////////
 // bluetooth
 ///////////////////////////////////////////////////////////////////////
 
-static char bdaddress[20];
+/* AOSP style interface */
+#define BDADDR_STR_SIZE 18
+static char bdaddr[BDADDR_STR_SIZE];
+
+module_param_string(bdaddr, bdaddr, sizeof(bdaddr), 0400);
+MODULE_PARM_DESC(bdaddr, "bluetooth address");
+
+static int parse_tag_bdaddr(void)
+{
+	uint32_t id1, id2, id3, sid1, sid2, sid3;
+	uint32_t id_base = 0xef260;
+	id1 = readl(MSM_SHARED_RAM_BASE + id_base + 0x0);
+	id2 = readl(MSM_SHARED_RAM_BASE + id_base + 0x4);
+	id3 = readl(MSM_SHARED_RAM_BASE + id_base + 0x8);
+	sid1 = crc32(~0, &id1, 4);
+	sid2 = crc32(~0, &id2, 4);
+	sid3 = crc32(~0, &id3, 4);
+	sprintf(bdaddr, "00:23:76:%2X:%2X:%2X", sid3 % 0xff, sid2 % 0xff, sid1 % 0xff);
+	pr_info("Device Bluetooth Mac Address: %s\n", bdaddr);
+	return 0;
+}
+/* end AOSP style interface */
+
+/*
+ * export unique BT mac address for Sense ROMs
+ * based on code by tytung
+ * by marc1706
+*/
+
+#define MAC_ADDRESS_SIZE_C	17
+static char bdaddress[MAC_ADDRESS_SIZE_C+1] = "";
 static void bt_export_bd_address(void)
  {
-	unsigned char cTemp[6];
-
-	memcpy(cTemp, get_bt_bd_ram(), 6);
-	sprintf(bdaddress, "%02x:%02x:%02x:%02x:%02x:%02x", cTemp[0], cTemp[1], cTemp[2], cTemp[3], cTemp[4], cTemp[5]);
-	pr_info("BD_ADDRESS=%s\n", bdaddress);
+	uint32_t id1, id2, id3, sid1, sid2, sid3;
+	uint32_t id_base = 0xef260;
+	if (!is_valid_mac_address(bdaddress)){
+		id1 = readl(MSM_SHARED_RAM_BASE + id_base + 0x0);
+		id2 = readl(MSM_SHARED_RAM_BASE + id_base + 0x4);
+		id3 = readl(MSM_SHARED_RAM_BASE + id_base + 0x8);
+		sid1 = crc32(~0, &id1, 4);
+		sid2 = crc32(~0, &id2, 4);
+		sid3 = crc32(~0, &id3, 4);
+		sprintf(bdaddress, "00:23:76:%2X:%2X:%2X", sid3 % 0xff, sid2 % 0xff, sid1 % 0xff);
+		pr_info("BD_ADDRESS=%s\n", bdaddress);
+	}
 }
 
 module_param_string(bdaddress, bdaddress, sizeof(bdaddress), S_IWUSR | S_IRUGO);
 MODULE_PARM_DESC(bdaddress, "BT MAC ADDRESS");
+
+#define MAX_BT_SIZE 0x6U
+static unsigned char bt_bd_ram[MAX_BT_SIZE] = {0x50,0xC3,0x00,0x00,0x00,0x00};
+unsigned char *get_bt_bd_ram(void)
+{
+	return (bt_bd_ram);
+}
+
+//-----added alias for bt mac address parameter--------
+static int __init htcleo_bt_macaddress_setup(char *bootconfig) 
+{
+	printk("%s: cmdline bt mac config=%s | %s\n",__FUNCTION__, bootconfig, __FILE__);
+	strncpy(bdaddress, bootconfig, MAC_ADDRESS_SIZE_C);
+    return 1;
+}
+__setup("bt.mac=", htcleo_bt_macaddress_setup);
+//-----------------------------------------------------
+/* end (sense) */
 
 #ifdef CONFIG_SERIAL_MSM_HS
 static struct msm_serial_hs_platform_data msm_uart_dm1_pdata =
@@ -1032,6 +1109,8 @@ static void __init htcleo_init(void)
 	#endif
 
 	init_dex_comm();
+
+	parse_tag_bdaddr();
 
 	config_gpio_table(bt_gpio_table, ARRAY_SIZE(bt_gpio_table));
 
