@@ -2,7 +2,6 @@ echo "###_root access check";
 touch /root/.accesstest;
 if [ ! -e /root/.accesstest ]; then echo "###_you must be logged in as root to continue"; exit; fi;
 
-make clean
 make ARCH=arm htcleo_defconfig
 make ARCH=arm CROSS_COMPILE=/root/CodeSourcery/Sourcery_G++_Lite_OLDTOOLCHAIN/bin/arm-none-linux-gnueabi- zImage -j6
 make ARCH=arm CROSS_COMPILE=/root/CodeSourcery/Sourcery_G++_Lite_OLDTOOLCHAIN/bin/arm-none-linux-gnueabi- modules -j6
