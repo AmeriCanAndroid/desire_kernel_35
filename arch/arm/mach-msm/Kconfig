@@ -1561,6 +1561,9 @@ choice
 	config HTCLEO_UNDERVOLT_800
 		bool "800 mV - does not work on every device"
 
+	config HTCLEO_UNDERVOLT_ACA
+		book "A nice custom set of voltages! Thanks ACA!"
+
 	config HTCLEO_NO_UNDERVOLT
 		bool "DEFAULT - 1050mV"
 
