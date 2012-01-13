@@ -14,3 +14,5 @@ tar cvzf ../"ACAOmegaHTC35KernelNONSENSE`date +"%m%d%y%H%M"`".tar.gz ../compiled
 if [ ! -e ../ACAKernels/ ]; then mkdir ../ACAKernels ]; fi;
 mv ../ACAOmegaHTC35Kernel* ../ACAKernels
 
+
+
