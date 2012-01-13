@@ -12,7 +12,7 @@ static atomic_t autogroup_seq_nr;
 static void __init autogroup_init(struct task_struct *init_task)
 {
 	autogroup_default.tg = &init_task_group;
-	// init_task_group.autogroup = &autogroup_default;
+	init_task_group.autogroup = &autogroup_default;
 	kref_init(&autogroup_default.kref);
 	init_rwsem(&autogroup_default.lock);
 	init_task->signal->autogroup = &autogroup_default;
@@ -106,7 +106,8 @@ task_wants_autogroup(struct task_struct *p, struct task_group *tg)
 	return true;
 }
 
-static inline struct task_group *autogroup_task_group(struct task_struct *p, struct task_group *tg)
+static inline struct task_group *
+autogroup_task_group(struct task_struct *p, struct task_group *tg)
 {
 	int enabled = ACCESS_ONCE(sysctl_sched_autogroup_enabled);
 
@@ -116,7 +117,8 @@ static inline struct task_group *autogroup_task_group(struct task_struct *p, str
 	return tg;
 }
 
-static void autogroup_move_group(struct task_struct *p, struct autogroup *ag)
+static void
+autogroup_move_group(struct task_struct *p, struct autogroup *ag)
 {
 	struct autogroup *prev;
 	struct task_struct *t;
@@ -167,7 +169,6 @@ void sched_autogroup_fork(struct signal_struct *sig)
 {
 	sig->autogroup = autogroup_task_get(current);
 }
-EXPORT_SYMBOL(sched_autogroup_fork);
 
 void sched_autogroup_exit(struct signal_struct *sig)
 {

@@ -82,6 +82,7 @@
 
 #include "sched_cpupri.h"
 #include "sched_autogroup.h"
+
 #define CREATE_TRACE_POINTS
 #include <trace/events/sched.h>
 
@@ -621,7 +622,7 @@ static inline int cpu_of(struct rq *rq)
  * holds that lock for each task it moves into the cgroup. Therefore
  * by holding that lock, we pin the task to the current cgroup.
  */
-static inline struct task_group *cgroup_task_group(struct task_struct *p)
+static inline struct task_group *task_group(struct task_struct *p)
 {
 	struct task_group *tg;
 	struct cgroup_subsys_state *css;
@@ -629,12 +630,6 @@ static inline struct task_group *cgroup_task_group(struct task_struct *p)
 	css = task_subsys_state_check(p, cpu_cgroup_subsys_id,
 			lockdep_is_held(&task_rq(p)->lock));
 	tg = container_of(css, struct task_group, css);
-	return tg;
-}
-static inline struct task_group *task_group(struct task_struct *p)
-{
-	struct task_group *tg;
- 	tg = cgroup_task_group(p); 
 
 	return autogroup_task_group(p, tg);
 }
