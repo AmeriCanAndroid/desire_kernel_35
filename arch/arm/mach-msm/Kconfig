@@ -763,6 +763,10 @@ config HTC_PWRSINK
 	default y
 	bool "HTC Power Sink Driver"
 
+config HTC_POWER_COLLAPSE_MAGIC
+	default n
+	bool "Check Power Collapse State"
+
 config MSM_SPM
 	bool "Subsystem Power Manager"
 	depends on ARCH_MSM7X30
@@ -1538,6 +1542,12 @@ config VIRTUAL_KPANIC_SRC
 	help
 	  Sets the partition to steal from to make the virtual one.
 
+config HTC_OFFMODE_ALARM
+	bool "Enables HTC offmode alarm."
+	default n
+	help
+	  Support HTC offmode alarm.
+
 config PHYS_OFFSET
        hex
        depends on MACH_HTCLEO
@@ -1860,12 +1870,6 @@ config HTC_SMEM_MSMC1C2_DEBUG
 	default n
 	help
 		Save msmc1/msmc2 voltage in shared memory
-
-config HTC_OFFMODE_ALARM
-	bool "Enables HTC offmode alarm."
-	default n
-	help
-		support HTC offmode alarm.
 
 config HTC_QUICKBOOT_OFFMODE_ALARM
         bool "Support HTC quickboot offmode alarm."
