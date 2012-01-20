@@ -8,14 +8,11 @@ fi;
 if [ ! -e ../compiled ];
 then
 	mkdir ../compiled;
-	mkdir ../compiled/root;
-	mkdir ../compiled/root/system;
-	mkdir ../compiled/root/system/lib;
-	mkdir ../compiled/root/system/lib/modules;
+	mkdir ../compiled/modules;
 fi;
 
 #packaging
 cp ./currentrelease.txt ../compiled/currentrelease.txt
 cp ./arch/arm/boot/zImage ../compiled/zImage
-find ./ -type f -name "*.ko" -exec cp {} ../compiled/root/system/lib/modules/ \;
+find ./ -type f -name "*.ko" -exec cp {} ../compiled/modules/ \;
 
