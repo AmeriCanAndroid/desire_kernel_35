@@ -48,7 +48,7 @@ struct early_suspend early_suspend;
 //#define LSENSOR_ABLK_ONLY       2
 
 
-#define LSENSOR_POLL_PROMESHUTOK   1000
+#define LSENSOR_POLL_PROMESHUTOK   2500
 
 #define D(x...) pr_debug(x)
 // pr_info(x)
