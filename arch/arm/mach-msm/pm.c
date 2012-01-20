@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ */
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -341,12 +342,6 @@ void msm_fiq_exit_sleep(void);
 static inline void msm_fiq_exit_sleep(void) { }
 #endif
 
-#ifdef CONFIG_HTC_POWER_COLLAPSE_MAGIC
-/* Set magic number in SMEM for power collapse state */
-#define HTC_POWER_COLLAPSE_ADD  (MSM_SHARED_RAM_BASE + 0x000F8000 + 0x000007F8)
-#define HTC_POWER_COLLAPSE_MAGIC_NUM    (HTC_POWER_COLLAPSE_ADD - 0x04)
-unsigned int magic_num;
-#endif
 
 static int msm_sleep(int sleep_mode, uint32_t sleep_delay, int from_idle)
 {
@@ -492,10 +487,6 @@ static int msm_sleep(int sleep_mode, uint32_t sleep_delay, int from_idle)
 		if (axi_rate)
 			clk_set_rate(axi_clk, sleep_axi_rate);
 #endif
-#ifdef CONFIG_HTC_POWER_COLLAPSE_MAGIC
-			magic_num = 0xAAAA1111;
-			writel(magic_num, HTC_POWER_COLLAPSE_MAGIC_NUM);
-#endif
 	}
 
 	if (sleep_mode < MSM_PM_SLEEP_MODE_APPS_SLEEP) {
@@ -547,11 +538,6 @@ static int msm_sleep(int sleep_mode, uint32_t sleep_delay, int from_idle)
 		msm_arch_idle();
 		rv = 0;
 	}
-
-#ifdef CONFIG_HTC_POWER_COLLAPSE_MAGIC
-		magic_num = 0xBBBB9999;
-		writel(magic_num, HTC_POWER_COLLAPSE_MAGIC_NUM);
-#endif
 
 	if (sleep_mode <= MSM_PM_SLEEP_MODE_RAMP_DOWN_AND_WAIT_FOR_INTERRUPT) {
 		if (msm_pm_debug_mask & MSM_PM_DEBUG_CLOCK)
@@ -1194,4 +1180,3 @@ static int __init msm_pm_init(void)
 }
 
 __initcall(msm_pm_init);
- */
