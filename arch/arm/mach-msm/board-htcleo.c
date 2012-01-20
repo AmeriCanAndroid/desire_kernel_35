@@ -1128,7 +1128,7 @@ static void __init htcleo_init(void)
 	htcleo_kgsl_power(true);
 
 	msm_device_uart_dm1.dev.platform_data = &msm_uart_dm1_pdata;
-	msm_device_uart_dm1.name = "msm_serial_hs_bcm"; /* for bcm */
+	msm_device_uart_dm1.name = "msm_serial_hs"; /* for bcm */
     	msm_device_uart_dm1.resource[3].end = 6;
 
 	platform_add_devices(devices, ARRAY_SIZE(devices));
