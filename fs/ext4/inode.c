@@ -1193,10 +1193,7 @@ static pgoff_t ext4_num_dirty_pages(struct inode *inode, pgoff_t idx,
 			idx++;
 			num++;
 			if (num >= max_pages)
-			{
-				done = 1;
 				break;
-			}
 		}
 		pagevec_release(&pvec);
 	}
