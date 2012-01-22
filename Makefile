@@ -530,12 +530,15 @@ endif # $(dot-config)
 # Defaults vmlinux but it is usually overridden in the arch makefile
 all: vmlinux
 
-#ifdef CONFIG_MACH_HTCLEO
+ifdef CONFIG_MACH_HTCLEO
 KBUILD_CFLAGS += -mcpu=cortex-a8 -march=armv7-a -mtune=cortex-a8 -mfpu=neon
-#endif
+endif
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
+else ifdef CONFIG_CC_OPTIMIZE_FOR_ACA
+# this changes the cflag to include -O3, -Ofast, strip binaries, amongst other things
+KBUILD_CFLAGS	+= -fomit-frame-pointer -fno-math-errno -fno-signed-zeros -fno-tree-vectorize -O3 -Ofast --strip-unneeded
 else
 KBUILD_CFLAGS	+= -O2
 endif
