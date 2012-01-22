@@ -95,26 +95,14 @@ void msm_hs_request_clock_on(struct uart_port *uport);
 static void __ll_msm_serial_clock_on(struct tty_struct *tty) {
 	struct uart_state *state = tty->driver_data;
 	struct uart_port *port = state->uart_port;
-#ifndef CONFIG_MACH_HTCLEO
 	msm_hs_request_clock_on(port);
-#else
-	bcm_msm_hs_request_clock_on(port);
-#endif
 }
 
 static void __ll_msm_serial_clock_request_off(struct tty_struct *tty) {
 	struct uart_state *state = tty->driver_data;
 	struct uart_port *port = state->uart_port;
-#ifndef CONFIG_MACH_HTCLEO
 	msm_hs_request_clock_off(port);
-#else
-	bcm_msm_hs_request_clock_off(port);
-#endif
 }
-#else
-static inline void __ll_msm_serial_clock_on(struct tty_struct *tty) {}
-static inline void __ll_msm_serial_clock_request_off(struct tty_struct *tty) {}
-#endif
 
 /*
  * Builds and sends an HCILL command packet.
