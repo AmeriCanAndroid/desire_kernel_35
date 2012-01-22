@@ -147,6 +147,7 @@ struct clkctl_acpu_speed acpu_freq_tbl[] = {
 #elif CONFIG_HTCLEO_UNDERVOLT_ACA 
 	// not working yet
 	{  19200, CCTL(CLK_TCXO, 1),		SRC_RAW, 0, 0, 975, 14000 },
+	{  96000, CCTL(CLK_TCXO, 1),		SRC_AXI, 0, 0, 975, 14000 },
 	{ 128000, CCTL(CLK_TCXO, 1),		SRC_AXI, 0, 0, 975, 14000 },
 	{ 245000, CCTL(CLK_MODEM_PLL, 1),	SRC_RAW, 0, 0, 1000, 29000 },
 	//{ 256000, CCTL(CLK_GLOBAL_PLL, 3),	SRC_RAW, 0, 0, 850, 29000 },
