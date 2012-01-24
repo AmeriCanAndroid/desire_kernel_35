@@ -95,6 +95,8 @@ static inline void synchronize_rcu_bh_expedited(void)
 	synchronize_sched_expedited();
 }
 
+extern void rcu_barrier(void);
+
 extern void rcu_check_callbacks(int cpu, int user);
 
 extern long rcu_batches_completed(void);
@@ -126,3 +128,4 @@ extern void rcu_scheduler_starting(void);
 extern int rcu_scheduler_active __read_mostly;
 
 #endif /* __LINUX_RCUTREE_H */
+

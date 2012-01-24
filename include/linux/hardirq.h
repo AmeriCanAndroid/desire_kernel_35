@@ -146,7 +146,7 @@ extern void account_system_vtime(struct task_struct *tsk);
 #endif
 
 #if defined(CONFIG_NO_HZ)
-#if defined(CONFIG_TINY_RCU)
+#if defined(CONFIG_TINY_RCU) || defined(CONFIG_TINY_PREEMPT_RCU)
 extern void rcu_enter_nohz(void);
 extern void rcu_exit_nohz(void);
 
@@ -235,3 +235,4 @@ extern void irq_exit(void);
 	} while (0)
 
 #endif /* LINUX_HARDIRQ_H */
+
