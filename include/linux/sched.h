@@ -1531,8 +1531,8 @@ struct task_struct {
 };
 
 #ifdef CONFIG_SCHED_BFS
-extern bool grunqueue_is_locked(void);
-extern void grq_unlock_wait(void);
+//extern bool grunqueue_is_locked(void);
+//extern void grq_unlock_wait(void);
 extern void cpu_scaling(int cpu);
 extern void cpu_nonscaling(int cpu);
 #define tsk_seruntime(t)		((t)->sched_time)
